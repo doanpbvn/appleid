@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="theme-color" content="#eee">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>iOS Support - Đoàn</title>
+  <link rel="icon" type="image/png" href="./image/appstore.png">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</script>
+  <style>
+    body {max-width: 800px;margin: 10px auto;}
+    .rainbow-animated {  background: linear-gradient(90deg,#ff0000,#ffa600,#00f7ff,#ff0000,#ffa600,#00f7ff);background-size: 400%;-webkit-background-clip: text;-webkit-text-fill-color: transparent;background-clip: text;animation: rainbowMove 3s linear infinite;text-align: center;}
+    @keyframes rainbowMove {  0% {background-position: 0%;}  100% {    background-position: 100%;  }}
+    table { width: calc(100% - 10px);    border-collapse: collapse;    table-layout: fixed;    margin: 5px auto;}
+    th, td { border: 1px solid #555; padding: 5px 10px;  overflow: hidden; white-space: nowrap;}
+    button, a {  width: calc(100% - 30px);  border-radius: 5px; border: 1px solid #555; cursor: pointer;  padding: 6px 12px; display: block; margin: 5px auto;font-weight: bold;color: #000;text-decoration: none;}
+    button:hover {background-color: #9bff9b; color: #000; border: 1px solid #9bff9b;font-weight: bold;}
+    .copy-feedback { display: none; color: green; font-weight: bold; }
+    .copy-feedback.visible { display: flex; opacity: 1; align-items:center; }
+    .section {  width: calc(100% - 50px); margin: auto; display: flex; gap: 10px;}
+    .prevBtn, .nextBtn {  flex: 1;  padding: 5px; }
+    .copytext {flex: 5;}    .btn-copy {flex: 1;}
+    p {text-align: center; font-weight: bold;}
+    input {  width: calc(100% - 20px);  display: flex;  justify-content: flex-start;  border: 1px dashed #555;  border-radius: 5px;  margin: 5px auto;  padding: 5px;}
+    h1, h2, h3, h4, h5, h6 { white-space: nowrap;  font-family: 'Arial', sans-serif;  font-weight: bold;  margin: 0 auto;  padding: 0 15px;}
+    label {width: calc(100% - 50px); margin: auto; display: flex; gap: 10px;}
+    label p, button, a{flex: 5;  border: 1px solid #555;  border-radius: 5px;  margin: 5px auto;  padding: 5px;}    label input{flex: 10;}
+    #keyError{color: red; margin-top: 5px; font-size: 14px; text-align: center;}
+    input, button { max-height: 30px; }
+  </style>    
+</head>
+<body>
+  <main>
+    <h2 class="rainbow-animated">Apple ID - Phạm Bình Đoàn</h2>
+    <div class="account">
+      <label for="fullName"><button>Full Name</button><input type="text" id="fullName" name="fullName" readonly /></label>
+      <label for="appleId"><button>Apple ID</button><input type="text" id="appleId" name="appleId" readonly /></label>
+      <label for="address"><button>Địa chỉ </button><input type="text" id="address" name="address" readonly /></label>
+      <label><button id="keyError">Nhập Key</button><input type="text" id="inputKey" placeholder="Liên Hệ Đoàn Cho Key!" /></label>
+      <button id="sendBtn" disabled>Gửi</button>
+    </div>
+    <button onclick="generateRandomUser()">Tạo Apple ID</button>
+    <button id="btnLoadData">Lấy Account</button>
+    <div id="dataContainer"></div>
+</main>
+  <script>
+    const baseUrl = "https://script.google.com/macros/s/AKfycbyhcGDOufKhFNCAMpQRQQgPwI3VpuyMl0DiX6fB01ROqlWKboU0pJfNKyt-3NDHK6t7/exec"
+    let headers = [];
+    let sheetData = [];
+    let liveData = [];
+    let selectedSheet = "";
+    let currentRowIndex = 0;
+    let currentUser = null;
+    // Auto Tạo ID
+    document.addEventListener("DOMContentLoaded", async () => {const selectedSheet = "AppleID"; for (let i = 0; i < 1; i++) {generateRandomUser();}});
+    // Hàm Tạo ID
+    async function generateRandomUser() {
+      try {
+        const response = await fetch('https://randomuser.me/api/?nat=ca');
+        const data = await response.json();
+        const user = data.results[0];
+        const first = user.name.first;
+        const last = user.name.last;
+        const appleId = `${first}${last}.${user.location.street.number}@icloud.com`.toLowerCase();
+        const street = `${user.location.street.number} ${user.location.street.name}`;
+        const city = user.location.city;const state = user.location.state;const postcode = user.location.postcode;const country = user.location.country;
+        const fullAddress = `${street} ${city} ${state} ${postcode} ${country}`;
+
+        currentUser = {fullName: `${first} ${last}`,appleId,address: fullAddress};
+        document.getElementById('fullName').value = currentUser.fullName;
+        document.getElementById('appleId').value = currentUser.appleId;
+        document.getElementById('address').value = currentUser.address;
+        const sendBtn = document.getElementById('sendBtn');
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Gửi';
+      } catch (error) {}
+    }
+    // Sự kiện Lấy Account ( Nhập Key )
+    document.getElementById('btnLoadData').addEventListener('click', async function() {
+      const btn = this;
+      const keyInput = document.getElementById('inputKey');
+      const keyErrorBtn = document.getElementById('keyError');
+      const key = keyInput.value.trim();
+      keyErrorBtn.style.display = 'none';
+      keyErrorBtn.onclick = null;
+
+      if (!key) {
+        keyErrorBtn.style.display = 'block';
+        keyErrorBtn.textContent = 'Telegram';
+        keyErrorBtn.onclick = () => {window.open('https://t.me/+KyqhU98-VAAwZDM1', '_blank', 'noopener,noreferrer');};
+        keyInput.focus();
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = `Load Account <span class="fas fa-spinner fa-spin"></span>`;
+
+      try {
+        const sheetName = 'AppleID';
+        const url = `${baseUrl}?sheet=${encodeURIComponent(sheetName)}&key=${encodeURIComponent(key)}`;
+        const response = await fetch(url);
+        const json = await response.json();
+        headers = json.headers || [];
+        sheetData = json.data || [];
+
+        sheetData.forEach(row => {row.forEach((value, index) => {if (value && value.includes("T") && value.includes("Z")) {row[index] = formatDate(value);}});});
+
+        liveData = sheetData.filter(row => {return row && row[3] && row[3].toString().trim().toLowerCase() === "live";});
+
+        if (liveData.length > 0) {
+          currentRowIndex = 0;
+          btn.innerHTML = `<span class="fas fa-check"></span> Lấy thành công!`;
+          displayData(currentRowIndex);
+        } else {
+          keyErrorBtn.style.display = 'block';
+          keyErrorBtn.textContent = 'Không có account live! Liên hệ Telegram';
+          keyErrorBtn.onclick = () => {window.open('https://t.me/+KyqhU98-VAAwZDM1', '_blank', 'noopener,noreferrer');};
+          keyInput.focus();
+          return;
+        }
+      } catch (error) {
+        console.error(error);
+        keyErrorBtn.style.display = 'block';
+        keyErrorBtn.textContent = 'Lỗi khi lấy dữ liệu! Liên hệ Telegram';
+        keyErrorBtn.onclick = () => {window.open('https://t.me/+KyqhU98-VAAwZDM1', '_blank', 'noopener,noreferrer');};
+        keyInput.focus();
+        return;
+      } finally {btn.disabled = false;btn.innerHTML = "Load Account";}
+    });
+    //Sự kiện gửi Acc Mới Lên Google Sheet
+    async function sendToSheet() {
+      if (!currentUser) return;
+      const sendBtn = document.getElementById('sendBtn');
+      sendBtn.disabled = true;
+      sendBtn.textContent = 'Đang gửi...';
+      Object.assign(sendBtn.style, { backgroundColor: '#9bff9b', color: '#555', border: '' });
+      try {
+        const res = await fetch(baseUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            colB: currentUser.fullName,
+            colC: currentUser.appleId,
+            colH: currentUser.address,
+          }),
+        });
+        if (!res.ok) throw new Error('Network error');
+        const text = await res.text();
+        sendBtn.textContent = text || 'Đã gửi';
+        Object.assign(sendBtn.style, { backgroundColor: '#9bff9b', color: '#000', border: '1px solid #9bff9b' });
+      } catch {sendBtn.disabled = false;}
+    }
+    // Định dạng chuỗi ngày giờ ISO sang định dạng ngày giờ theo múi giờ Asia/Ho_Chi_Minh và ngôn ngữ Việt Nam.
+    function formatDate(isoDateStr) {if (!isoDateStr) return "";
+      return new Date(isoDateStr).toLocaleString('vi-VN', {
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        timeZone: 'Asia/Ho_Chi_Minh'
+      });
+    }
+    // Hiển Thi Data
+    function displayData(rowIndex) {
+      currentRowIndex = rowIndex;
+      const container = document.getElementById("dataContainer");
+      const row = liveData[rowIndex];
+      const originalRowIndex = sheetData.findIndex(r => r === row);
+      container.innerHTML = createSectionHTML(rowIndex, selectedSheet, row, originalRowIndex);
+    }
+    // Cập nhật giao diện Data 
+    function createSectionHTML(rowIndex, sheetName, row, originalRowIndex) {
+      let html = `<div class="section"><button id="prevBtn" ${rowIndex <= 0 ? "disabled" : ""}>Prev</button><button id="nextBtn" ${rowIndex >= liveData.length - 1 ? "disabled" : ""}>Next</button></div><p class="rainbow-animated">Account Live ${rowIndex + 1}/${liveData.length} - Hàng ${originalRowIndex + 2} trong sheet</p>`;
+      headers.forEach((header, index) => {
+        const value = row[index] || "";
+        if ([0, 3, 4, 6].includes(index)) return;
+        else {  html += `<div id = "${header}"><h4>${header}</h4>${value.trim() === ""
+                ? `<div class="section"><input class="copytext" value="Chưa có dữ liệu!" id="accountData${rowIndex}-${index}" readonly></div>`
+                : `<div class="section">
+                  <input class="copytext" value="${value}" id="accountData-${rowIndex}-${index}" readonly />
+                  <button class="btn-copy fas fa-copy" data-copy-id="accountData-${rowIndex}-${index}" data-copy-value="${value}" type="button"></button>
+                  <span id="feedback-accountData-${rowIndex}-${index}" class="copy-feedback">Đã copy!</span></div>`}</div>`;
+              }});return html;
+    }
+    // Sự kiện điều hướng và copy
+    document.getElementById("dataContainer").addEventListener("click", async (e) => {
+        if (e.target.closest(".btn-copy")) {
+        const btn = e.target.closest(".btn-copy");
+        const value = btn.getAttribute("data-copy-value") || "";
+        const copyId = btn.getAttribute("data-copy-id");
+        try {
+            await navigator.clipboard.writeText(value);
+            const feedback = document.getElementById(`feedback-${copyId}`);
+            if (feedback) {btn.style.display = "none";feedback.classList.add("visible");setTimeout(() => {feedback.classList.remove("visible");btn.style.display = "inline-block";}, 3000);}
+        } catch (err) {}}
+      if (e.target.id === "prevBtn") { if (currentRowIndex > 0) displayData(currentRowIndex - 1);}
+      if (e.target.id === "nextBtn") { if (currentRowIndex < liveData.length - 1) displayData(currentRowIndex + 1);}
+    });
+  </script>
+</body>
+</html>
