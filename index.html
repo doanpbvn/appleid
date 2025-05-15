@@ -52,6 +52,8 @@
     let selectedSheet = "";
     let currentRowIndex = 0;
     let currentUser = null;
+    // Sự kiện Gửi lên Google Sheet
+    document.getElementById('sendBtn').addEventListener('click', sendToSheet);
     // Auto Tạo ID
     document.addEventListener("DOMContentLoaded", async () => {const selectedSheet = "AppleID"; for (let i = 0; i < 1; i++) {generateRandomUser();}});
     // Hàm Tạo ID
