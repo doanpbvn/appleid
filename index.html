@@ -45,7 +45,7 @@
     <div id="dataContainer"></div>
 </main>
   <script>
-    const baseUrl = "https://script.google.com/macros/s/AKfycbyhcGDOufKhFNCAMpQRQQgPwI3VpuyMl0DiX6fB01ROqlWKboU0pJfNKyt-3NDHK6t7/exec"
+    const baseUrl = "https://script.google.com/macros/s/AKfycbyHM8rqbn-lwAOSaMSjsiFAi_P9bEjdKEBQWAR6KpEx0TV1A70RB1_MAjuNtnsbXqjr/exec"
     let headers = [];
     let sheetData = [];
     let liveData = [];
@@ -87,8 +87,8 @@
 
       if (!key) {
         keyErrorBtn.style.display = 'block';
-        keyErrorBtn.textContent = 'Telegram';
-        keyErrorBtn.onclick = () => {window.open('https://t.me/+KyqhU98-VAAwZDM1', '_blank', 'noopener,noreferrer');};
+        keyErrorBtn.textContent = 'Facebook';
+        keyErrorBtn.onclick = () => {window.open('https://www.facebook.com/doanpb.tb', '_blank', 'noopener,noreferrer');};
         keyInput.focus();
         return;
       }
@@ -114,16 +114,16 @@
           displayData(currentRowIndex);
         } else {
           keyErrorBtn.style.display = 'block';
-          keyErrorBtn.textContent = 'Không có account live! Liên hệ Telegram';
-          keyErrorBtn.onclick = () => {window.open('https://t.me/+KyqhU98-VAAwZDM1', '_blank', 'noopener,noreferrer');};
+          keyErrorBtn.textContent = 'Liên hệ Facebook!';
+          keyErrorBtn.onclick = () => {window.open('https://www.facebook.com/doanpb.tb', '_blank', 'noopener,noreferrer');};
           keyInput.focus();
           return;
         }
       } catch (error) {
         console.error(error);
         keyErrorBtn.style.display = 'block';
-        keyErrorBtn.textContent = 'Lỗi khi lấy dữ liệu! Liên hệ Telegram';
-        keyErrorBtn.onclick = () => {window.open('https://t.me/+KyqhU98-VAAwZDM1', '_blank', 'noopener,noreferrer');};
+        keyErrorBtn.textContent = 'Liên hệ Facebook!';
+        keyErrorBtn.onclick = () => {window.open('https://www.facebook.com/doanpb.tb', '_blank', 'noopener,noreferrer');};
         keyInput.focus();
         return;
       } finally {btn.disabled = false;btn.innerHTML = "Load Account";}
